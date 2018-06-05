@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CDN Provider</title>
+</head>
+
+<body>
+    <div id="content"></div>
+    <ul id="items">
+
+    </ul>
+    <script>
+        function ask(directory) {
+            fetch(directory + '?f=1').then(res => {
+                return res.json();
+            }).then(res => {
+                if (res.type == 'directory') {
+                    res.content.forEach(item => {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+
+                        a.innerText = item;
+                        a.href = directory + (directory[directory.length - 1] == '/' ? '' : '/') + item;
+
+                        li.appendChild(a);
+
+                        document.getElementById('items').appendChild(li);
+                    });
+                } else if (res.type == 'file') {
+                    document.getElementById('content').innerText = res.content;
+                } else if(res.type == 'error') {
+                    document.getElementById('content').innerText = res.content;
+                }
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+
+        ask(window.location.href);
+    </script>
+</body>
+
+</html>
